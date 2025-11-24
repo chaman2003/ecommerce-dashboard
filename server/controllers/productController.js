@@ -141,6 +141,7 @@ export const getProduct = async (req, res) => {
 export const getAnalytics = async (req, res) => {
   try {
     await ensureDBConnection();
+    console.log(`📊 getAnalytics called with query: ${JSON.stringify(req.query)}`);
     
     const { category, brand, origin, minPrice, maxPrice, minRating, featured } = req.query;
     
