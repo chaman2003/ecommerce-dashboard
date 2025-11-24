@@ -1,9 +1,9 @@
 const PLACEHOLDER_BASE = 'https://placehold.co/500x750/111827/38bdf8?font=montserrat&text=';
 
-const buildPlaceholderText = (title = 'Movie Poster') => {
+const buildPlaceholderText = (title = 'Product Image') => {
   const cleanTitle = typeof title === 'string' && title.trim().length > 0
     ? title.trim().replace(/\s+/g, ' ')
-    : 'Movie Poster';
+    : 'Product Image';
 
   const words = cleanTitle.split(' ');
   const lines = [];
@@ -24,7 +24,7 @@ const buildPlaceholderText = (title = 'Movie Poster') => {
   }
 
   const limitedLines = lines.slice(0, 3);
-  const text = limitedLines.join('\n') || 'Movie Poster';
+  const text = limitedLines.join('\n') || 'Product Image';
   return `${PLACEHOLDER_BASE}${encodeURIComponent(text)}`;
 };
 

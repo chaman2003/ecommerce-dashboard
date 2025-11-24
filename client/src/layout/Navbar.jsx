@@ -54,10 +54,10 @@ const Navbar = ({ handleDrawerToggle }) => {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Welcome to MovieHub
+              Welcome to TechMart
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Discover your next favorite movie
+              Discover your next favorite gadget
             </Typography>
           </motion.div>
         </Box>

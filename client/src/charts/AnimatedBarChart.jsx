@@ -37,7 +37,7 @@ const AnimatedBarChart = ({
               fontWeight: 600,
             }}
           >
-            {payload[0].value} movies
+            {payload[0].value} items
           </Typography>
         </Box>
       );

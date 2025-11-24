@@ -28,7 +28,7 @@ const AnimatedRadarChart = ({
             {payload[0].payload[nameKey]}
           </Typography>
           <Typography variant="body2" sx={{ color: '#00d4ff' }}>
-            {payload[0].value} movies
+            {payload[0].value} items
           </Typography>
         </Box>
       );
@@ -149,7 +149,7 @@ const AnimatedRadarChart = ({
                   style={{ fontSize: '10px' }}
                 />
                 <Radar
-                  name="Movies"
+                  name="Products"
                   dataKey={dataKey}
                   stroke="#00d4ff"
                   fill="#00d4ff"

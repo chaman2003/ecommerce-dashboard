@@ -22,7 +22,7 @@ import {
   Paper,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import MovieIcon from '@mui/icons-material/Movie';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import StarIcon from '@mui/icons-material/Star';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import TimelineIcon from '@mui/icons-material/Timeline';
@@ -32,25 +32,23 @@ import AnimatedBarChart from '../charts/AnimatedBarChart';
 import AnimatedPieChart from '../charts/AnimatedPieChart';
 import AnimatedAreaChart from '../charts/AnimatedAreaChart';
 import AnimatedRadarChart from '../charts/AnimatedRadarChart';
-import { movieAPI } from '../services/api';
+import { productAPI } from '../services/api';
 
 const MotionTableRow = motion(TableRow);
 
 const Dashboard = () => {
-  // analytics will come from the product API; default to an empty object for safer access
   const [analytics, setAnalytics] = useState(null);
-  const [topMovies, setTopMovies] = useState([]);
-  const [filterOptions, setFilterOptions] = useState({ languages: [], countries: [], years: [] });
+  const [topProducts, setTopProducts] = useState([]);
+  const [filterOptions, setFilterOptions] = useState({ brands: [], origins: [], categories: [] });
   const [loading, setLoading] = useState(true);
   const [isRefetching, setIsRefetching] = useState(false);
   const abortControllerRef = useRef(null);
   
   // Filters
-  const [selectedLanguage, setSelectedLanguage] = useState('All');
-  const [selectedCountry, setSelectedCountry] = useState('All');
-  const [selectedYear, setSelectedYear] = useState('All');
+  const [selectedBrand, setSelectedBrand] = useState('All');
+  const [selectedOrigin, setSelectedOrigin] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [minRating, setMinRating] = useState(0);
-  const [selectedGenre, setSelectedGenre] = useState('All');
   const ratingMarks = [0, 2, 4, 6, 7, 8, 9, 10].map((value) => ({
     value,
     label: `${value}★`,
@@ -60,21 +58,16 @@ const Dashboard = () => {
     if (value === undefined || value === null) return;
 
     switch (type) {
-      case 'language': {
-        setSelectedLanguage((prev) => (prev === value ? 'All' : value));
+      case 'brand': {
+        setSelectedBrand((prev) => (prev === value ? 'All' : value));
         break;
       }
-      case 'country': {
-        setSelectedCountry((prev) => (prev === value ? 'All' : value));
+      case 'origin': {
+        setSelectedOrigin((prev) => (prev === value ? 'All' : value));
         break;
       }
-      case 'genre': {
-        setSelectedGenre((prev) => (prev === value ? 'All' : value));
-        break;
-      }
-      case 'year': {
-        const normalizedYear = value.toString();
-        setSelectedYear((prev) => (prev === normalizedYear ? 'All' : normalizedYear));
+      case 'category': {
+        setSelectedCategory((prev) => (prev === value ? 'All' : value));
         break;
       }
       case 'rating': {
@@ -101,18 +94,12 @@ const Dashboard = () => {
   useEffect(() => {
     fetchFilteredData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLanguage, selectedCountry, selectedYear, minRating, selectedGenre]);
+  }, [selectedBrand, selectedOrigin, selectedCategory, minRating]);
 
   const fetchFilterOptions = async () => {
     try {
-      const response = await movieAPI.getFilterOptions();
-      // Map product API filter options to legacy names expected by the Dashboard
-      const data = response.data.data || {};
-      setFilterOptions({
-        languages: data.brands || [],
-        countries: data.origins || [],
-        years: [] // will be populated from analytics when available
-      });
+      const response = await productAPI.getFilterOptions();
+      setFilterOptions(response.data.data || { brands: [], origins: [], categories: [] });
     } catch (error) {
       console.error('Error fetching filter options:', error);
     }
@@ -136,50 +123,17 @@ const Dashboard = () => {
 
     try {
       const params = {};
-      if (selectedLanguage !== 'All') params.movieLanguage = selectedLanguage;
-      if (selectedCountry !== 'All') params.movieCountry = selectedCountry;
-      if (selectedYear !== 'All') params.year = selectedYear;
+      if (selectedBrand !== 'All') params.brand = selectedBrand;
+      if (selectedOrigin !== 'All') params.origin = selectedOrigin;
+      if (selectedCategory !== 'All') params.category = selectedCategory;
       if (minRating > 0) params.minRating = minRating;
-      if (selectedGenre !== 'All') params.genre = selectedGenre;
 
-      const analyticsResponse = await movieAPI.getAnalytics(params, { signal: controller.signal });
+      const analyticsResponse = await productAPI.getAnalytics(params, { signal: controller.signal });
       const analyticsPayload = analyticsResponse.data.data || {};
 
-      // Normalize/compatibility mapping: map product analytics keys to "movies" naming used by the dashboard
-      const normalized = {
-        // count/summary
-        totalMovies: analyticsPayload.totalProducts ?? analyticsPayload.totalMovies ?? 0,
-        avgRating: analyticsPayload.avgRating ?? 0,
-        // ratings distribution
-        ratingDistribution: analyticsPayload.ratingDistribution ?? analyticsPayload.ratingDistribution ?? [],
-        // timeline: convert revenueByMonth -> moviesPerYear (aggregate sold per year as 'count')
-        moviesPerYear: (() => {
-          const byMonth = analyticsPayload.revenueByMonth || [];
-          const byYearMap = {};
-          byMonth.forEach((m) => {
-            const year = m._id?.year?.toString() || 'Unknown';
-            byYearMap[year] = (byYearMap[year] || 0) + (m.sold || 0);
-          });
-          return Object.keys(byYearMap).map((y) => ({ _id: y, count: byYearMap[y] }));
-        })(),
-        // genres -> categories
-        moviesPerGenre: analyticsPayload.productsPerCategory || [],
-        // languages -> brands
-        moviesPerLanguage: analyticsPayload.productsPerBrand || [],
-        // countries -> origins
-        moviesPerCountry: analyticsPayload.productsPerOrigin || [],
-        // top rated movies -> top revenue/sold products (prefer rating if exists)
-        topRatedMovies: analyticsPayload.topSellingProducts || analyticsPayload.topRevenueProducts || [],
-      };
+      setAnalytics(analyticsPayload);
+      setTopProducts(analyticsPayload.topSellingProducts || []);
 
-      setAnalytics(normalized);
-      setTopMovies((normalized.topRatedMovies && Array.isArray(normalized.topRatedMovies)) ? normalized.topRatedMovies : []);
-
-      // If years filter is empty, derive it from the normalized timeline
-      if ((!filterOptions.years || filterOptions.years.length === 0) && normalized.moviesPerYear) {
-        const years = normalized.moviesPerYear.map((y) => y._id).sort((a, b) => b - a);
-        setFilterOptions((prev) => ({ ...prev, years }));
-      }
     } catch (error) {
       if (error.code === 'ERR_CANCELED') return;
       console.error('Error fetching data:', error);
@@ -198,11 +152,10 @@ const Dashboard = () => {
   }, []);
 
   const resetFilters = () => {
-    setSelectedLanguage('All');
-    setSelectedCountry('All');
-    setSelectedYear('All');
+    setSelectedBrand('All');
+    setSelectedOrigin('All');
+    setSelectedCategory('All');
     setMinRating(0);
-    setSelectedGenre('All');
   };
 
   if (loading) {
@@ -235,22 +188,24 @@ const Dashboard = () => {
     );
   }
 
-  const yearChartData = (analytics.moviesPerYear || []).map((item) => ({
-    name: item._id.toString(),
-    count: item.count,
+  const revenueChartData = (analytics.revenueByMonth || []).map((item) => ({
+    name: `${item._id.year}-${item._id.month}`,
+    revenue: item.revenue,
+    sold: item.sold
   }));
 
-  const genreChartData = (analytics.moviesPerGenre || []).map((item) => ({
+  const categoryChartData = (analytics.productsPerCategory || []).map((item) => ({
     name: item._id,
     count: item.count,
+    revenue: item.revenue
   }));
   
-  const languageChartData = (analytics.moviesPerLanguage || []).map((item) => ({
+  const brandChartData = (analytics.productsPerBrand || []).map((item) => ({
     name: item._id,
     value: item.count,
   })) || [];
   
-  const countryChartData = (analytics.moviesPerCountry || []).map((item) => ({
+  const originChartData = (analytics.productsPerOrigin || []).map((item) => ({
     name: item._id,
     value: item.count,
   })) || [];
@@ -275,16 +230,14 @@ const Dashboard = () => {
       bucketStart,
     };
   });
-  const activeYear = selectedYear !== 'All' ? selectedYear.toString() : null;
-  const activeGenre = selectedGenre !== 'All' ? selectedGenre : null;
-  const activeLanguage = selectedLanguage !== 'All' ? selectedLanguage : null;
-  const activeCountry = selectedCountry !== 'All' ? selectedCountry : null;
+  
+  const activeBrand = selectedBrand !== 'All' ? selectedBrand : null;
+  const activeOrigin = selectedOrigin !== 'All' ? selectedOrigin : null;
+  const activeCategory = selectedCategory !== 'All' ? selectedCategory : null;
   const activeRatingLabel = minRating > 0 ? (ratingBucketLabels[minRating] || `${minRating}+★`) : null;
-  const filtersApplied = [selectedLanguage, selectedCountry, selectedYear, selectedGenre].some((value) => value !== 'All') || minRating > 0;
-  const busiestYearEntry = analytics.moviesPerYear?.length
-    ? analytics.moviesPerYear.reduce((top, item) => (item.count > top.count ? item : top))
-    : null;
-  const heroMovie = topMovies[0] || null;
+  const filtersApplied = [selectedBrand, selectedOrigin, selectedCategory].some((value) => value !== 'All') || minRating > 0;
+  
+  const heroProduct = topProducts[0] || null;
 
   const showInlineLoader = isRefetching && !loading;
 
@@ -321,7 +274,7 @@ const Dashboard = () => {
             WebkitTextFillColor: 'transparent',
           }}
         >
-          E-Commerce Analytics Dashboard
+          Tech Product Dashboard
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
           Comprehensive insights into your product catalog with real-time filters
@@ -366,15 +319,15 @@ const Dashboard = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth>
-                <InputLabel>Language</InputLabel>
+                <InputLabel>Brand</InputLabel>
                 <Select
-                  value={selectedLanguage}
-                  label="Language"
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  value={selectedBrand}
+                  label="Brand"
+                  onChange={(e) => setSelectedBrand(e.target.value)}
                 >
-                  <MenuItem value="All">All Languages</MenuItem>
-                  {filterOptions.languages.map((lang) => (
-                    <MenuItem key={lang} value={lang}>{lang}</MenuItem>
+                  <MenuItem value="All">All Brands</MenuItem>
+                  {filterOptions.brands.map((brand) => (
+                    <MenuItem key={brand} value={brand}>{brand}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -382,53 +335,37 @@ const Dashboard = () => {
             
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth>
-                <InputLabel>Country</InputLabel>
+                <InputLabel>Origin</InputLabel>
                 <Select
-                  value={selectedCountry}
-                  label="Country"
-                  onChange={(e) => setSelectedCountry(e.target.value)}
+                  value={selectedOrigin}
+                  label="Origin"
+                  onChange={(e) => setSelectedOrigin(e.target.value)}
                 >
-                  <MenuItem value="All">All Countries</MenuItem>
-                  {filterOptions.countries.map((country) => (
-                    <MenuItem key={country} value={country}>{country}</MenuItem>
+                  <MenuItem value="All">All Origins</MenuItem>
+                  {filterOptions.origins.map((origin) => (
+                    <MenuItem key={origin} value={origin}>{origin}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
             
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth>
-                <InputLabel>Year</InputLabel>
+                <InputLabel>Category</InputLabel>
                 <Select
-                  value={selectedYear}
-                  label="Year"
-                  onChange={(e) => setSelectedYear(e.target.value)}
+                  value={selectedCategory}
+                  label="Category"
+                  onChange={(e) => setSelectedCategory(e.target.value)}
                 >
-                  <MenuItem value="All">All Years</MenuItem>
-                  {filterOptions.years.map((year) => (
-                    <MenuItem key={year} value={year}>{year}</MenuItem>
+                  <MenuItem value="All">All Categories</MenuItem>
+                  {filterOptions.categories.map((cat) => (
+                    <MenuItem key={cat} value={cat}>{cat}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
             
-            <Grid item xs={12} sm={6} md={2}>
-              <FormControl fullWidth>
-                <InputLabel>Genre</InputLabel>
-                <Select
-                  value={selectedGenre}
-                  label="Genre"
-                  onChange={(e) => setSelectedGenre(e.target.value)}
-                >
-                  <MenuItem value="All">All Genres</MenuItem>
-                  {['Action', 'Drama', 'Comedy', 'Horror', 'Sci-Fi', 'Romance', 'Thriller', 'Crime', 'Adventure', 'Animation', 'Biography', 'Documentary', 'Fantasy', 'Family', 'War', 'Western', 'Musical', 'Mystery'].map((genre) => (
-                    <MenuItem key={genre} value={genre}>{genre}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            
-            <Grid item xs={12} md={2}>
+            <Grid item xs={12} md={3}>
               <Box sx={{ px: 1 }}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Min Rating: {minRating.toFixed(1)}
@@ -454,31 +391,24 @@ const Dashboard = () => {
           </Grid>
           
           <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {selectedLanguage !== 'All' && (
+            {selectedBrand !== 'All' && (
               <Chip 
-                label={`Language: ${selectedLanguage}`} 
-                onDelete={() => setSelectedLanguage('All')}
+                label={`Brand: ${selectedBrand}`} 
+                onDelete={() => setSelectedBrand('All')}
                 sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
               />
             )}
-            {selectedCountry !== 'All' && (
+            {selectedOrigin !== 'All' && (
               <Chip 
-                label={`Country: ${selectedCountry}`} 
-                onDelete={() => setSelectedCountry('All')}
+                label={`Origin: ${selectedOrigin}`} 
+                onDelete={() => setSelectedOrigin('All')}
                 sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
               />
             )}
-            {selectedYear !== 'All' && (
+            {selectedCategory !== 'All' && (
               <Chip 
-                label={`Year: ${selectedYear}`} 
-                onDelete={() => setSelectedYear('All')}
-                sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
-              />
-            )}
-            {selectedGenre !== 'All' && (
-              <Chip 
-                label={`Genre: ${selectedGenre}`} 
-                onDelete={() => setSelectedGenre('All')}
+                label={`Category: ${selectedCategory}`} 
+                onDelete={() => setSelectedCategory('All')}
                 sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
               />
             )}
@@ -497,9 +427,9 @@ const Dashboard = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
-            title="Filtered Movies"
-            value={analytics.totalMovies}
-            icon={<MovieIcon sx={{ fontSize: 32 }} />}
+            title="Total Products"
+            value={analytics.totalProducts}
+            icon={<InventoryIcon sx={{ fontSize: 32 }} />}
             subtitle={filtersApplied ? 'Matching current filters' : 'Entire catalog'}
             color="#00d4ff"
             delay={0}
@@ -510,27 +440,27 @@ const Dashboard = () => {
             title="Average Rating"
             value={analytics.avgRating}
             icon={<StarIcon sx={{ fontSize: 32 }} />}
-            subtitle="Out of 10"
+            subtitle="Out of 5"
             color="#ffaa00"
             delay={0.1}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
-            title="Peak Release Year"
-            value={busiestYearEntry?._id || 'N/A'}
+            title="Total Revenue"
+            value={`$${(analytics.totalRevenue / 1000).toFixed(1)}k`}
             icon={<TimelineIcon sx={{ fontSize: 32 }} />}
-            subtitle={busiestYearEntry ? `${busiestYearEntry.count} releases` : 'No data'}
+            subtitle={`${analytics.totalSold} units sold`}
             color="#00ff88"
             delay={0.2}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
-            title="Top Rated Product"
-              value={heroMovie?.title || heroMovie?.name || 'N/A'}
+            title="Top Product"
+              value={heroProduct?.name || 'N/A'}
             icon={<EmojiEventsIcon sx={{ fontSize: 32 }} />}
-            subtitle={heroMovie ? `${(heroMovie.rating ?? 0).toFixed(1)} ★ • ${heroMovie.year || new Date(heroMovie?.createdAt).getFullYear()}` : 'No winners yet'}
+            subtitle={heroProduct ? `${(heroProduct.rating ?? 0).toFixed(1)} ★ • ${heroProduct.brand}` : 'No winners yet'}
             color="#a78bfa"
             delay={0.3}
           />
@@ -541,22 +471,22 @@ const Dashboard = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} lg={6}>
           <AnimatedAreaChart
-            data={yearChartData}
-            title="Movies Timeline"
-            dataKey="count"
+            data={revenueChartData}
+            title="Revenue Trend"
+            dataKey="revenue"
             xAxisKey="name"
-            onPointClick={(_, label) => handleChartSelection('year', label)}
-            activeItem={activeYear}
+            onPointClick={() => {}}
+            activeItem={null}
           />
         </Grid>
         <Grid item xs={12} lg={6}>
           <AnimatedBarChart
-            data={genreChartData.slice(0, 10)}
-            title="Top 10 Genres"
+            data={categoryChartData.slice(0, 10)}
+            title="Top Categories"
             dataKey="count"
             xAxisKey="name"
-            onItemClick={(_, label) => handleChartSelection('genre', label)}
-            activeItem={activeGenre}
+            onItemClick={(_, label) => handleChartSelection('category', label)}
+            activeItem={activeCategory}
           />
         </Grid>
       </Grid>
@@ -565,32 +495,32 @@ const Dashboard = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} md={6} lg={4}>
           <AnimatedPieChart
-            data={languageChartData.slice(0, 8)}
-            title="Top Languages Distribution"
+            data={brandChartData.slice(0, 8)}
+            title="Top Brands"
             dataKey="value"
             nameKey="name"
-            onItemClick={(_, label) => handleChartSelection('language', label)}
-            activeItem={activeLanguage}
+            onItemClick={(_, label) => handleChartSelection('brand', label)}
+            activeItem={activeBrand}
           />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
           <AnimatedPieChart
-            data={countryChartData.slice(0, 8)}
-            title="Top Countries Distribution"
+            data={originChartData.slice(0, 8)}
+            title="Origins"
             dataKey="value"
             nameKey="name"
-            onItemClick={(_, label) => handleChartSelection('country', label)}
-            activeItem={activeCountry}
+            onItemClick={(_, label) => handleChartSelection('origin', label)}
+            activeItem={activeOrigin}
           />
         </Grid>
         <Grid item xs={12} md={12} lg={4}>
           <AnimatedRadarChart
-            data={genreChartData.slice(0, 8)}
-            title="Genre Radar Analysis"
+            data={categoryChartData.slice(0, 8)}
+            title="Category Analysis"
             dataKey="count"
             nameKey="name"
-            onItemClick={(_, label) => handleChartSelection('genre', label)}
-            activeItem={activeGenre}
+            onItemClick={(_, label) => handleChartSelection('category', label)}
+            activeItem={activeCategory}
           />
         </Grid>
       </Grid>
@@ -609,7 +539,7 @@ const Dashboard = () => {
         </Grid>
       </Grid>
 
-      {/* Top Rated Movies Table */}
+      {/* Top Rated Products Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -640,33 +570,33 @@ const Dashboard = () => {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Top 10 Rated Movies {filtersApplied && '(Filtered)'}
+              Top Selling Products {filtersApplied && '(Filtered)'}
             </Typography>
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>Rank</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Title</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Year</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Language</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Country</TableCell>
-                    <TableCell sx={{ fontWeight: 600 }}>Genre</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Brand</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Origin</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Category</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Sold</TableCell>
                     <TableCell sx={{ fontWeight: 600 }} align="right">
                       Rating
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {topMovies.length === 0 ? (
+                  {topProducts.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={7} align="center" sx={{ py: 4, color: 'text.secondary' }}>
-                        No movies match the selected filters
+                        No products match the selected filters
                       </TableCell>
                     </TableRow>
-                  ) : topMovies.map((movie, index) => (
+                  ) : topProducts.map((product, index) => (
                     <MotionTableRow
-                      key={movie._id}
+                      key={product._id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
@@ -702,17 +632,12 @@ const Dashboard = () => {
                       </TableCell>
                       <TableCell sx={{ fontWeight: 500 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {movie.title || movie.name}
+                          {product.name}
                         </Box>
                       </TableCell>
                       <TableCell>
-                          <Typography variant="body2" color="text.secondary">
-                          {movie.year || (movie.createdAt ? new Date(movie.createdAt).getFullYear() : 'N/A')}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
                           <Chip 
-                          label={movie.movieLanguage || movie.brand || 'N/A'} 
+                          label={product.brand || 'N/A'} 
                           size="small"
                           sx={{ 
                             background: 'rgba(167, 139, 250, 0.2)',
@@ -723,7 +648,7 @@ const Dashboard = () => {
                       </TableCell>
                       <TableCell>
                           <Chip 
-                          label={movie.movieCountry || movie.origin || 'N/A'} 
+                          label={product.origin || 'N/A'} 
                           size="small"
                           sx={{ 
                             background: 'rgba(0, 255, 136, 0.2)',
@@ -733,11 +658,12 @@ const Dashboard = () => {
                         />
                       </TableCell>
                       <TableCell>
-                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                          {((movie.genre && Array.isArray(movie.genre)) ? movie.genre : (movie.category ? [movie.category] : [])).slice(0, 2).map((g, i) => (
-                            <Chip key={i} label={g} size="small" />
-                          ))}
-                        </Box>
+                        <Chip label={product.category} size="small" />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" color="text.secondary">
+                          {product.sold}
+                        </Typography>
                       </TableCell>
                       <TableCell align="right">
                         <Box
@@ -757,7 +683,7 @@ const Dashboard = () => {
                             variant="body2"
                             sx={{ fontWeight: 600, color: '#ffaa00' }}
                           >
-                            {(movie.rating ?? 0).toFixed(1)}
+                            {(product.rating ?? 0).toFixed(1)}
                           </Typography>
                         </Box>
                       </TableCell>

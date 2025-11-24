@@ -28,7 +28,7 @@ const AnimatedAreaChart = ({
             {label}
           </Typography>
           <Typography variant="body2" sx={{ color: '#00d4ff' }}>
-            {payload[0].value} movies
+            {payload[0].value} items
           </Typography>
         </Box>
       );

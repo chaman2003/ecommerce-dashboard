@@ -30,7 +30,7 @@ const AnimatedPieChart = ({
             {payload[0].name}
           </Typography>
           <Typography variant="body2" sx={{ color: '#00d4ff' }}>
-            {payload[0].value} movies ({((payload[0].value / data.reduce((sum, item) => sum + item[dataKey], 0)) * 100).toFixed(1)}%)
+            {payload[0].value} items ({((payload[0].value / data.reduce((sum, item) => sum + item[dataKey], 0)) * 100).toFixed(1)}%)
           </Typography>
         </Box>
       );

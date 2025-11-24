@@ -19,16 +19,15 @@ import StarIcon from '@mui/icons-material/Star';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import { productAPI } from '../services/api';
 
-const genres = ['All', 'Action', 'Drama', 'Comedy', 'Horror', 'Sci-Fi', 'Romance', 'Thriller', 'Crime', 'Adventure'];
+const categories = ['All', 'Laptops', 'Smartphones', 'Cameras', 'Drones', 'Accessories', 'Tablets', 'Gaming', 'Audio'];
 
 const Recommendations = () => {
   const [recommendations, setRecommendations] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [minRating, setMinRating] = useState(7);
-  const [selectedLanguage, setSelectedLanguage] = useState('All');
-  const [selectedCountry, setSelectedCountry] = useState('All');
-  const [selectedYear, setSelectedYear] = useState('All');
-  const [filterOptions, setFilterOptions] = useState({ languages: [], countries: [], years: [] });
+  const [selectedBrand, setSelectedBrand] = useState('All');
+  const [selectedOrigin, setSelectedOrigin] = useState('All');
+  const [filterOptions, setFilterOptions] = useState({ brands: [], origins: [] });
   const [filtersLoading, setFiltersLoading] = useState(false);
   const [filtersError, setFiltersError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,10 +38,9 @@ const Recommendations = () => {
   };
 
   const handleResetFilters = () => {
-    setSelectedGenre('All');
-    setSelectedLanguage('All');
-    setSelectedCountry('All');
-    setSelectedYear('All');
+    setSelectedCategory('All');
+    setSelectedBrand('All');
+    setSelectedOrigin('All');
     setMinRating(7);
   };
 
@@ -54,9 +52,8 @@ const Recommendations = () => {
         const response = await productAPI.getFilterOptions();
         const data = response.data.data || {};
         setFilterOptions({
-          languages: data.brands || [],
-          countries: data.origins || [],
-          years: []
+          brands: data.brands || [],
+          origins: data.origins || [],
         });
       } catch (error) {
         console.error('Error loading filter options:', error);
@@ -74,25 +71,13 @@ const Recommendations = () => {
       setLoading(true);
       try {
         const params = { minRating };
-        if (selectedGenre !== 'All') params.genre = selectedGenre;
-        if (selectedLanguage !== 'All') params.brand = selectedLanguage;
-        if (selectedCountry !== 'All') params.origin = selectedCountry;
-        if (selectedYear !== 'All') params.year = Number(selectedYear);
+        if (selectedCategory !== 'All') params.category = selectedCategory;
+        if (selectedBrand !== 'All') params.brand = selectedBrand;
+        if (selectedOrigin !== 'All') params.origin = selectedOrigin;
 
         const response = await productAPI.getRecommendations(params);
         const raw = response.data.data || [];
-        // Normalize returned products into legacy movie-shaped data used by the UI
-        const normalized = raw.map((p) => ({
-          ...p,
-          title: p.title || p.name,
-          rating: p.rating ?? 0,
-          year: p.year || (p.createdAt ? new Date(p.createdAt).getFullYear() : 'N/A'),
-          movieLanguage: p.movieLanguage || p.brand || null,
-          movieCountry: p.movieCountry || p.origin || null,
-          genre: Array.isArray(p.genre) ? p.genre : (p.category ? [p.category] : []),
-          description: p.description || p.summary || p.details || '',
-        }));
-        setRecommendations(normalized);
+        setRecommendations(raw);
       } catch (error) {
         console.error('Error fetching recommendations:', error);
       } finally {
@@ -101,7 +86,7 @@ const Recommendations = () => {
     };
 
     fetchRecommendations();
-  }, [selectedGenre, minRating, selectedLanguage, selectedCountry, selectedYear]);
+  }, [selectedCategory, minRating, selectedBrand, selectedOrigin]);
 
   return (
     <Box>
@@ -152,17 +137,16 @@ const Recommendations = () => {
                   Fine-tune Recommendations
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Combine genre, geography, and rating filters to narrow suggestions.
+                  Combine category, brand, and rating filters to narrow suggestions.
                 </Typography>
               </Box>
               <Button
                 variant="outlined"
                 onClick={handleResetFilters}
                 disabled={
-                  selectedGenre === 'All' &&
-                  selectedLanguage === 'All' &&
-                  selectedCountry === 'All' &&
-                  selectedYear === 'All' &&
+                  selectedCategory === 'All' &&
+                  selectedBrand === 'All' &&
+                  selectedOrigin === 'All' &&
                   minRating === 7
                 }
                 sx={{ borderColor: '#00d4ff', color: '#00d4ff' }}
@@ -178,71 +162,53 @@ const Recommendations = () => {
             )}
 
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
-                  <InputLabel>Genre</InputLabel>
+                  <InputLabel>Category</InputLabel>
                   <Select
-                    value={selectedGenre}
-                    label="Genre"
-                    onChange={(e) => setSelectedGenre(e.target.value)}
+                    value={selectedCategory}
+                    label="Category"
+                    onChange={(e) => setSelectedCategory(e.target.value)}
                   >
-                    {genres.map((genre) => (
-                      <MenuItem key={genre} value={genre}>
-                        {genre}
+                    {categories.map((cat) => (
+                      <MenuItem key={cat} value={cat}>
+                        {cat}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
-                  <InputLabel>Language</InputLabel>
+                  <InputLabel>Brand</InputLabel>
                   <Select
-                    value={selectedLanguage}
-                    label="Language"
-                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    value={selectedBrand}
+                    label="Brand"
+                    onChange={(e) => setSelectedBrand(e.target.value)}
                     disabled={filtersLoading}
                   >
-                    <MenuItem value="All">All languages</MenuItem>
-                    {filterOptions.languages.map((language) => (
-                      <MenuItem key={language} value={language}>
-                        {language}
+                    <MenuItem value="All">All brands</MenuItem>
+                    {filterOptions.brands.map((brand) => (
+                      <MenuItem key={brand} value={brand}>
+                        {brand}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <FormControl fullWidth>
-                  <InputLabel>Country</InputLabel>
+                  <InputLabel>Origin</InputLabel>
                   <Select
-                    value={selectedCountry}
-                    label="Country"
-                    onChange={(e) => setSelectedCountry(e.target.value)}
+                    value={selectedOrigin}
+                    label="Origin"
+                    onChange={(e) => setSelectedOrigin(e.target.value)}
                     disabled={filtersLoading}
                   >
-                    <MenuItem value="All">All countries</MenuItem>
-                    {filterOptions.countries.map((country) => (
-                      <MenuItem key={country} value={country}>
-                        {country}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Release Year</InputLabel>
-                  <Select
-                    value={selectedYear}
-                    label="Release Year"
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                    disabled={filtersLoading}
-                  >
-                    <MenuItem value="All">All years</MenuItem>
-                    {filterOptions.years.map((year) => (
-                      <MenuItem key={year} value={String(year)}>
-                        {year}
+                    <MenuItem value="All">All origins</MenuItem>
+                    {filterOptions.origins.map((origin) => (
+                      <MenuItem key={origin} value={origin}>
+                        {origin}
                       </MenuItem>
                     ))}
                   </Select>
@@ -313,29 +279,27 @@ const Recommendations = () => {
                       Featured Pick
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-                      {recommendations[0].title}
+                      {recommendations[0].name}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2, flexWrap: 'wrap' }}>
                       <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.8, px: 1.5, py: 0.5, borderRadius: '999px', background: 'rgba(255,255,255,0.15)' }}>
                         <StarIcon sx={{ fontSize: 18, color: '#ffaa00' }} />
                         <Typography variant="h6" sx={{ color: '#ffaa00', fontWeight: 700 }}>
-                          {recommendations[0].rating.toFixed(1)}
+                          {(recommendations[0].rating ?? 0).toFixed(1)}
                         </Typography>
                       </Box>
                       <Typography variant="body1" color="text.secondary">
-                        {recommendations[0].year}
+                        ${recommendations[0].price}
                       </Typography>
-                      {recommendations[0].movieLanguage && (
-                        <Chip label={recommendations[0].movieLanguage} size="small" sx={{ background: 'rgba(0, 0, 0, 0.2)', color: '#fff' }} />
+                      {recommendations[0].brand && (
+                        <Chip label={recommendations[0].brand} size="small" sx={{ background: 'rgba(0, 0, 0, 0.2)', color: '#fff' }} />
                       )}
-                      {recommendations[0].movieCountry && (
-                        <Chip label={recommendations[0].movieCountry} size="small" sx={{ background: 'rgba(0, 0, 0, 0.2)', color: '#fff' }} />
+                      {recommendations[0].origin && (
+                        <Chip label={recommendations[0].origin} size="small" sx={{ background: 'rgba(0, 0, 0, 0.2)', color: '#fff' }} />
                       )}
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
-                      {recommendations[0].genre?.map((g) => (
-                        <Chip key={g} label={g} size="small" variant="outlined" sx={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }} />
-                      ))}
+                      <Chip label={recommendations[0].category} size="small" variant="outlined" sx={{ borderColor: 'rgba(255,255,255,0.3)', color: '#fff' }} />
                     </Box>
                     {recommendations[0].description && (
                       <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.7 }}>
@@ -360,9 +324,9 @@ const Recommendations = () => {
                     Runner-ups
                   </Typography>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                    {recommendations.slice(1).map((movie, index) => (
+                    {recommendations.slice(1).map((product, index) => (
                       <motion.div
-                        key={movie._id}
+                        key={product._id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.2, delay: index * 0.03 }}
@@ -395,30 +359,28 @@ const Recommendations = () => {
                           <Box sx={{ flex: 1 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
                               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                                {movie.title}
+                                {product.name}
                               </Typography>
                               <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, px: 1, py: 0.2, borderRadius: '6px', background: 'rgba(255, 170, 0, 0.15)' }}>
                                 <StarIcon sx={{ fontSize: 14, color: '#ffaa00' }} />
                                 <Typography variant="body2" sx={{ color: '#ffaa00', fontWeight: 600 }}>
-                                  {movie.rating.toFixed(1)}
+                                  {(product.rating ?? 0).toFixed(1)}
                                 </Typography>
                               </Box>
                             </Box>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', mt: 1 }}>
                               <Typography variant="body2" color="text.secondary">
-                                {movie.year}
+                                ${product.price}
                               </Typography>
-                              {movie.movieLanguage && <Chip label={movie.movieLanguage} size="small" />}
-                              {movie.movieCountry && <Chip label={movie.movieCountry} size="small" />}
+                              {product.brand && <Chip label={product.brand} size="small" />}
+                              {product.origin && <Chip label={product.origin} size="small" />}
                             </Box>
                             <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 1 }}>
-                              {movie.genre?.map((g) => (
-                                <Chip key={g} label={g} size="small" variant="outlined" />
-                              ))}
+                              <Chip label={product.category} size="small" variant="outlined" />
                             </Box>
-                            {movie.description && (
+                            {product.description && (
                               <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {movie.description.substring(0, 160)}...
+                                {product.description.substring(0, 160)}...
                               </Typography>
                             )}
                           </Box>

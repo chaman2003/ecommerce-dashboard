@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const PROD_BACKEND = 'https://bigdata-movie-backend.vercel.app';
-
 const buildApiUrl = (inputUrl) => {
   if (!inputUrl) return null;
 
@@ -29,7 +27,7 @@ const resolveBaseUrl = () => {
     return { url: buildApiUrl(window.location.origin), source: 'same-origin' };
   }
 
-  const fallbackTarget = process.env.NODE_ENV === 'production' ? PROD_BACKEND : 'http://localhost:5000';
+  const fallbackTarget = 'http://localhost:5000';
   return { url: buildApiUrl(fallbackTarget), source: 'fallback' };
 };
 
@@ -74,8 +72,5 @@ export const productAPI = {
   updateProduct: (id, data, config = {}) => api.put(`/products/${id}`, data, config),
   deleteProduct: (id, config = {}) => api.delete(`/products/${id}`, config),
 };
-
-// Legacy support - keep movieAPI as alias
-export const movieAPI = productAPI;
 
 export default api;
