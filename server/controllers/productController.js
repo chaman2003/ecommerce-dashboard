@@ -301,10 +301,19 @@ export const getAnalytics = async (req, res) => {
       { $sort: { '_id.year': 1, '_id.month': 1 } }
     ]);
     
+    // Also include compatibility keys that some legacy frontend components expect
+    const moviesPerYear = (revenueByMonth || []).map((m) => ({ _id: m._id?.year?.toString() || 'Unknown', count: m.sold || 0 }));
+    const moviesPerGenre = productsPerCategory || [];
+    const moviesPerLanguage = productsPerBrand || [];
+    const moviesPerCountry = productsPerOrigin || [];
+    const topRatedMovies = topSellingProducts || topRevenueProducts || [];
+
     res.json({
       success: true,
       data: {
         totalProducts,
+        // also provide old key names for compatibility
+        totalMovies: totalProducts,
         avgRating: parseFloat(avgRating.toFixed(2)),
         totalRevenue: parseFloat(totalRevenue.toFixed(2)),
         totalSold,
@@ -320,7 +329,13 @@ export const getAnalytics = async (req, res) => {
         ratingDistribution,
         topSellingProducts,
         topRevenueProducts,
-        revenueByMonth
+        revenueByMonth,
+        // legacy compatibility fields
+        moviesPerYear,
+        moviesPerGenre,
+        moviesPerLanguage,
+        moviesPerCountry,
+        topRatedMovies,
       }
     });
   } catch (error) {
