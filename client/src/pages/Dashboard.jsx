@@ -37,6 +37,7 @@ import { movieAPI } from '../services/api';
 const MotionTableRow = motion(TableRow);
 
 const Dashboard = () => {
+  // analytics will come from the product API; default to an empty object for safer access
   const [analytics, setAnalytics] = useState(null);
   const [topMovies, setTopMovies] = useState([]);
   const [filterOptions, setFilterOptions] = useState({ languages: [], countries: [], years: [] });
@@ -105,7 +106,13 @@ const Dashboard = () => {
   const fetchFilterOptions = async () => {
     try {
       const response = await movieAPI.getFilterOptions();
-      setFilterOptions(response.data.data);
+      // Map product API filter options to legacy names expected by the Dashboard
+      const data = response.data.data || {};
+      setFilterOptions({
+        languages: data.brands || [],
+        countries: data.origins || [],
+        years: [] // will be populated from analytics when available
+      });
     } catch (error) {
       console.error('Error fetching filter options:', error);
     }
@@ -136,10 +143,43 @@ const Dashboard = () => {
       if (selectedGenre !== 'All') params.genre = selectedGenre;
 
       const analyticsResponse = await movieAPI.getAnalytics(params, { signal: controller.signal });
-      const analyticsPayload = analyticsResponse.data.data;
+      const analyticsPayload = analyticsResponse.data.data || {};
 
-      setAnalytics(analyticsPayload);
-      setTopMovies(analyticsPayload.topRatedMovies || []);
+      // Normalize/compatibility mapping: map product analytics keys to "movies" naming used by the dashboard
+      const normalized = {
+        // count/summary
+        totalMovies: analyticsPayload.totalProducts ?? analyticsPayload.totalMovies ?? 0,
+        avgRating: analyticsPayload.avgRating ?? 0,
+        // ratings distribution
+        ratingDistribution: analyticsPayload.ratingDistribution ?? analyticsPayload.ratingDistribution ?? [],
+        // timeline: convert revenueByMonth -> moviesPerYear (aggregate sold per year as 'count')
+        moviesPerYear: (() => {
+          const byMonth = analyticsPayload.revenueByMonth || [];
+          const byYearMap = {};
+          byMonth.forEach((m) => {
+            const year = m._id?.year?.toString() || 'Unknown';
+            byYearMap[year] = (byYearMap[year] || 0) + (m.sold || 0);
+          });
+          return Object.keys(byYearMap).map((y) => ({ _id: y, count: byYearMap[y] }));
+        })(),
+        // genres -> categories
+        moviesPerGenre: analyticsPayload.productsPerCategory || [],
+        // languages -> brands
+        moviesPerLanguage: analyticsPayload.productsPerBrand || [],
+        // countries -> origins
+        moviesPerCountry: analyticsPayload.productsPerOrigin || [],
+        // top rated movies -> top revenue/sold products (prefer rating if exists)
+        topRatedMovies: analyticsPayload.topSellingProducts || analyticsPayload.topRevenueProducts || [],
+      };
+
+      setAnalytics(normalized);
+      setTopMovies((normalized.topRatedMovies && Array.isArray(normalized.topRatedMovies)) ? normalized.topRatedMovies : []);
+
+      // If years filter is empty, derive it from the normalized timeline
+      if ((!filterOptions.years || filterOptions.years.length === 0) && normalized.moviesPerYear) {
+        const years = normalized.moviesPerYear.map((y) => y._id).sort((a, b) => b - a);
+        setFilterOptions((prev) => ({ ...prev, years }));
+      }
     } catch (error) {
       if (error.code === 'ERR_CANCELED') return;
       console.error('Error fetching data:', error);
@@ -195,22 +235,22 @@ const Dashboard = () => {
     );
   }
 
-  const yearChartData = analytics.moviesPerYear.map((item) => ({
+  const yearChartData = (analytics.moviesPerYear || []).map((item) => ({
     name: item._id.toString(),
     count: item.count,
   }));
 
-  const genreChartData = analytics.moviesPerGenre.map((item) => ({
+  const genreChartData = (analytics.moviesPerGenre || []).map((item) => ({
     name: item._id,
     count: item.count,
   }));
   
-  const languageChartData = analytics.moviesPerLanguage?.map((item) => ({
+  const languageChartData = (analytics.moviesPerLanguage || []).map((item) => ({
     name: item._id,
     value: item.count,
   })) || [];
   
-  const countryChartData = analytics.moviesPerCountry?.map((item) => ({
+  const countryChartData = (analytics.moviesPerCountry || []).map((item) => ({
     name: item._id,
     value: item.count,
   })) || [];
@@ -244,7 +284,7 @@ const Dashboard = () => {
   const busiestYearEntry = analytics.moviesPerYear?.length
     ? analytics.moviesPerYear.reduce((top, item) => (item.count > top.count ? item : top))
     : null;
-  const heroMovie = topMovies[0];
+  const heroMovie = topMovies[0] || null;
 
   const showInlineLoader = isRefetching && !loading;
 
@@ -487,10 +527,10 @@ const Dashboard = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
-            title="Top Rated Title"
-            value={heroMovie?.title || 'N/A'}
+            title="Top Rated Product"
+              value={heroMovie?.title || heroMovie?.name || 'N/A'}
             icon={<EmojiEventsIcon sx={{ fontSize: 32 }} />}
-            subtitle={heroMovie ? `${heroMovie.rating.toFixed(1)} ★ • ${heroMovie.year}` : 'No winners yet'}
+            subtitle={heroMovie ? `${(heroMovie.rating ?? 0).toFixed(1)} ★ • ${heroMovie.year || new Date(heroMovie?.createdAt).getFullYear()}` : 'No winners yet'}
             color="#a78bfa"
             delay={0.3}
           />
@@ -662,17 +702,17 @@ const Dashboard = () => {
                       </TableCell>
                       <TableCell sx={{ fontWeight: 500 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          {movie.title}
+                          {movie.title || movie.name}
                         </Box>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" color="text.secondary">
-                          {movie.year}
+                          <Typography variant="body2" color="text.secondary">
+                          {movie.year || (movie.createdAt ? new Date(movie.createdAt).getFullYear() : 'N/A')}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={movie.movieLanguage || 'N/A'} 
+                          <Chip 
+                          label={movie.movieLanguage || movie.brand || 'N/A'} 
                           size="small"
                           sx={{ 
                             background: 'rgba(167, 139, 250, 0.2)',
@@ -682,8 +722,8 @@ const Dashboard = () => {
                         />
                       </TableCell>
                       <TableCell>
-                        <Chip 
-                          label={movie.movieCountry || 'N/A'} 
+                          <Chip 
+                          label={movie.movieCountry || movie.origin || 'N/A'} 
                           size="small"
                           sx={{ 
                             background: 'rgba(0, 255, 136, 0.2)',
@@ -694,7 +734,7 @@ const Dashboard = () => {
                       </TableCell>
                       <TableCell>
                         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                          {(movie.genre || []).slice(0, 2).map((g, i) => (
+                          {((movie.genre && Array.isArray(movie.genre)) ? movie.genre : (movie.category ? [movie.category] : [])).slice(0, 2).map((g, i) => (
                             <Chip key={i} label={g} size="small" />
                           ))}
                         </Box>
@@ -713,11 +753,11 @@ const Dashboard = () => {
                           }}
                         >
                           <StarIcon sx={{ fontSize: 16, color: '#ffaa00' }} />
-                          <Typography
+                            <Typography
                             variant="body2"
                             sx={{ fontWeight: 600, color: '#ffaa00' }}
                           >
-                            {movie.rating.toFixed(1)}
+                            {(movie.rating ?? 0).toFixed(1)}
                           </Typography>
                         </Box>
                       </TableCell>
