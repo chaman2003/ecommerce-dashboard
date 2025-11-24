@@ -18,7 +18,7 @@ const MainLayout = () => {
       sx={{
         display: 'flex',
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #0f1419 0%, #1a1a2e 100%)',
+        background: 'linear-gradient(135deg, #1a0e2e 0%, #14002e 100%)',
         position: 'relative',
         overflow: 'hidden',
         '&::before': {

@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Box } from '@mui/material';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 
-const StatCard = ({ title, value, icon, subtitle, color = '#00d4ff', delay = 0 }) => {
+const StatCard = ({ title, value, icon, subtitle, color = '#a78bfa', delay = 0 }) => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9, y: 20 }}

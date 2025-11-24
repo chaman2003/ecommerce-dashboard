@@ -96,12 +96,12 @@ const Recommendations = () => {
         transition={{ duration: 0.5 }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-          <ThumbUpIcon sx={{ fontSize: 40, color: '#00d4ff' }} />
+          <ThumbUpIcon sx={{ fontSize: 40, color: '#a78bfa' }} />
           <Typography
             variant="h4"
             sx={{
               fontWeight: 700,
-              background: 'linear-gradient(135deg, #ffffff 0%, #00d4ff 100%)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #a78bfa 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -149,7 +149,7 @@ const Recommendations = () => {
                   selectedOrigin === 'All' &&
                   minRating === 7
                 }
-                sx={{ borderColor: '#00d4ff', color: '#00d4ff' }}
+                sx={{ borderColor: '#a78bfa', color: '#a78bfa' }}
               >
                 Reset
               </Button>
@@ -227,13 +227,13 @@ const Recommendations = () => {
                   marks
                   valueLabelDisplay="auto"
                   sx={{
-                    color: '#00d4ff',
+                    color: '#a78bfa',
                     '& .MuiSlider-thumb': {
-                      background: 'linear-gradient(135deg, #00d4ff 0%, #0080ff 100%)',
-                      boxShadow: '0 4px 12px rgba(0, 212, 255, 0.4)',
+                      background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+                      boxShadow: '0 4px 12px rgba(167, 139, 250, 0.4)',
                     },
                     '& .MuiSlider-track': {
-                      background: 'linear-gradient(90deg, #00d4ff 0%, #0080ff 100%)',
+                      background: 'linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%)',
                     },
                   }}
                 />
@@ -245,7 +245,7 @@ const Recommendations = () => {
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '40vh' }}>
-          <CircularProgress sx={{ color: '#00d4ff' }} size={60} />
+          <CircularProgress sx={{ color: '#a78bfa' }} size={60} />
         </Box>
       ) : (
         <>
@@ -268,14 +268,14 @@ const Recommendations = () => {
               >
                 <Card
                   sx={{
-                    background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 128, 255, 0.2) 100%)',
-                    border: '1px solid rgba(0, 212, 255, 0.4)',
+                    background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)',
+                    border: '1px solid rgba(167, 139, 250, 0.4)',
                     borderRadius: '20px',
                     overflow: 'hidden',
                   }}
                 >
                   <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-                    <Typography variant="overline" sx={{ letterSpacing: 2, color: '#00e4ff' }}>
+                    <Typography variant="overline" sx={{ letterSpacing: 2, color: '#a78bfa' }}>
                       Featured Pick
                     </Typography>
                     <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
@@ -346,13 +346,13 @@ const Recommendations = () => {
                             width: 36,
                             height: 36,
                             borderRadius: '50%',
-                            background: 'rgba(0,212,255,0.15)',
-                            border: '1px solid rgba(0,212,255,0.4)',
+                            background: 'rgba(167, 139, 250, 0.15)',
+                            border: '1px solid rgba(167, 139, 250, 0.4)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             fontWeight: 700,
-                            color: '#00d4ff'
+                            color: '#a78bfa'
                           }}>
                             {index + 2}
                           </Box>

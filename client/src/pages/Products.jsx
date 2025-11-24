@@ -256,7 +256,7 @@ const Products = () => {
           sx={{
             mb: 1,
             fontWeight: 800,
-            background: 'linear-gradient(135deg, #ffffff 0%, #00f5ff 100%)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #a78bfa 100%)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -284,13 +284,13 @@ const Products = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: '#00f5ff' }} />
+                <SearchIcon sx={{ color: '#a78bfa' }} />
               </InputAdornment>
             ),
             endAdornment: (
               <InputAdornment position="end">
                 {isFetching && !loading && (
-                  <CircularProgress size={20} sx={{ color: '#00f5ff' }} />
+                  <CircularProgress size={20} sx={{ color: '#a78bfa' }} />
                 )}
               </InputAdornment>
             ),
@@ -329,7 +329,7 @@ const Products = () => {
                   priceRange[1] === 10000 &&
                   minRating === 0
                 }
-                sx={{ color: '#00f5ff', borderColor: '#00f5ff' }}
+                sx={{ color: '#a78bfa', borderColor: '#a78bfa' }}
               >
                 Reset All
               </Button>
@@ -394,7 +394,7 @@ const Products = () => {
                     marks
                     valueLabelDisplay="auto"
                     sx={{
-                      color: '#00f5ff',
+                      color: '#a78bfa',
                       '& .MuiSlider-thumb': {
                         boxShadow: '0 2px 10px rgba(0, 245, 255, 0.5)',
                       }
@@ -417,7 +417,7 @@ const Products = () => {
                     valueLabelDisplay="auto"
                     valueLabelFormat={(value) => formatPrice(value)}
                     sx={{
-                      color: '#00f5ff',
+                      color: '#a78bfa',
                       '& .MuiSlider-thumb': {
                         boxShadow: '0 2px 10px rgba(0, 245, 255, 0.5)',
                       }
@@ -451,7 +451,7 @@ const Products = () => {
                 sx={{
                   background:
                     selectedCategory === category
-                      ? 'linear-gradient(135deg, #00f5ff 0%, #00c2cc 100%)'
+                      ? 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)'
                       : 'rgba(255, 255, 255, 0.05)',
                   border:
                     selectedCategory === category
@@ -466,7 +466,7 @@ const Products = () => {
                   '&:hover': {
                     background:
                       selectedCategory === category
-                        ? 'linear-gradient(135deg, #5dfdff 0%, #00f5ff 100%)'
+                        ? 'linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%)'
                         : 'rgba(0, 245, 255, 0.15)',
                   },
                 }}
@@ -486,7 +486,7 @@ const Products = () => {
             onDelete={() => setSearchTerm('')}
             sx={{ 
               background: 'rgba(0, 245, 255, 0.15)',
-              color: '#00f5ff'
+              color: '#a78bfa'
             }}
           />
         )}
@@ -621,7 +621,7 @@ const Products = () => {
                           sx={{
                             background: 'rgba(0, 245, 255, 0.12)',
                             border: '1px solid rgba(0, 245, 255, 0.3)',
-                            color: '#00f5ff',
+                            color: '#a78bfa',
                             fontWeight: 600,
                             fontSize: '0.7rem',
                           }}
@@ -636,7 +636,7 @@ const Products = () => {
                             variant="h5"
                             sx={{
                               fontWeight: 800,
-                              background: 'linear-gradient(135deg, #00f5ff 0%, #5dfdff 100%)',
+                              background: 'linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)',
                               backgroundClip: 'text',
                               WebkitBackgroundClip: 'text',
                               WebkitTextFillColor: 'transparent',
@@ -705,7 +705,7 @@ const Products = () => {
 
       {isFetching && !loading && products.length > 0 && (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-          <CircularProgress size={40} sx={{ color: '#00f5ff' }} />
+          <CircularProgress size={40} sx={{ color: '#a78bfa' }} />
         </Box>
       )}
 
@@ -754,13 +754,13 @@ const Products = () => {
                         sx={{
                           background: 'rgba(0, 245, 255, 0.15)',
                           border: '1px solid rgba(0, 245, 255, 0.4)',
-                          color: '#00f5ff',
+                          color: '#a78bfa',
                           fontWeight: 700,
                         }}
                       />
                     )}
                   </Box>
-                  <IconButton onClick={handleCloseModal} sx={{ color: '#00f5ff' }}>
+                  <IconButton onClick={handleCloseModal} sx={{ color: '#a78bfa' }}>
                     <CloseIcon />
                   </IconButton>
                 </Box>
@@ -790,8 +790,8 @@ const Products = () => {
                         border: '1px solid rgba(0, 245, 255, 0.3)',
                       }}
                     >
-                      <AttachMoneyIcon sx={{ color: '#00f5ff' }} />
-                      <Typography variant="h5" sx={{ fontWeight: 800, color: '#00f5ff' }}>
+                      <AttachMoneyIcon sx={{ color: '#a78bfa' }} />
+                      <Typography variant="h5" sx={{ fontWeight: 800, color: '#a78bfa' }}>
                         {formatPrice(selectedProduct.price)}
                       </Typography>
                     </Box>
@@ -829,7 +829,7 @@ const Products = () => {
                           sx={{
                             background: 'rgba(0, 245, 255, 0.15)',
                             border: '1px solid rgba(0, 245, 255, 0.4)',
-                            color: '#00f5ff',
+                            color: '#a78bfa',
                             fontWeight: 700,
                           }}
                         />
@@ -907,7 +907,7 @@ const Products = () => {
                             variant="outlined"
                             sx={{
                               borderColor: 'rgba(0, 245, 255, 0.3)',
-                              color: '#00f5ff',
+                              color: '#a78bfa',
                             }}
                           />
                         ))}
