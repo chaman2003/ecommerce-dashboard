@@ -52,7 +52,12 @@ const Recommendations = () => {
       setFiltersError(null);
       try {
         const response = await productAPI.getFilterOptions();
-        setFilterOptions(response.data.data || { languages: [], countries: [], years: [] });
+        const data = response.data.data || {};
+        setFilterOptions({
+          languages: data.brands || [],
+          countries: data.origins || [],
+          years: []
+        });
       } catch (error) {
         console.error('Error loading filter options:', error);
         setFiltersError('Some filters may be unavailable right now.');
@@ -75,7 +80,19 @@ const Recommendations = () => {
         if (selectedYear !== 'All') params.year = Number(selectedYear);
 
         const response = await productAPI.getRecommendations(params);
-        setRecommendations(response.data.data);
+        const raw = response.data.data || [];
+        // Normalize returned products into legacy movie-shaped data used by the UI
+        const normalized = raw.map((p) => ({
+          ...p,
+          title: p.title || p.name,
+          rating: p.rating ?? 0,
+          year: p.year || (p.createdAt ? new Date(p.createdAt).getFullYear() : 'N/A'),
+          movieLanguage: p.movieLanguage || p.brand || null,
+          movieCountry: p.movieCountry || p.origin || null,
+          genre: Array.isArray(p.genre) ? p.genre : (p.category ? [p.category] : []),
+          description: p.description || p.summary || p.details || '',
+        }));
+        setRecommendations(normalized);
       } catch (error) {
         console.error('Error fetching recommendations:', error);
       } finally {
