@@ -321,10 +321,10 @@ const Dashboard = () => {
             WebkitTextFillColor: 'transparent',
           }}
         >
-          Movie Analytics Dashboard
+          E-Commerce Analytics Dashboard
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          Comprehensive insights into your movie collection with real-time filters
+          Comprehensive insights into your product catalog with real-time filters
         </Typography>
       </motion.div>
 

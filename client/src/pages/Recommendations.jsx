@@ -122,11 +122,11 @@ const Recommendations = () => {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Movie Recommendations
+            Product Recommendations
           </Typography>
         </Box>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          Discover highly-rated movies tailored to your preferences
+          Discover highly-rated products tailored to your preferences
         </Typography>
       </motion.div>
 
@@ -288,8 +288,8 @@ const Recommendations = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-              {recommendations.length} Recommended Movies
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
+              {recommendations.length} Recommended Products
             </Typography>
           </motion.div>
 
