@@ -4,34 +4,34 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#00f5ff',
-      light: '#5dfdff',
-      dark: '#00c2cc',
+      main: '#a78bfa',
+      light: '#c4b5fd',
+      dark: '#7c3aed',
     },
     secondary: {
-      main: '#ff3366',
-      light: '#ff6690',
-      dark: '#cc0033',
+      main: '#ec4899',
+      light: '#f472b6',
+      dark: '#be185d',
     },
     background: {
-      default: '#0a0e1a',
-      paper: 'rgba(15, 23, 42, 0.7)',
+      default: '#1a0e2e',
+      paper: 'rgba(20, 10, 40, 0.7)',
     },
     text: {
       primary: '#ffffff',
       secondary: 'rgba(255, 255, 255, 0.75)',
     },
     error: {
-      main: '#ff3366',
+      main: '#ec4899',
     },
     success: {
-      main: '#00ff88',
+      main: '#a855f7',
     },
     warning: {
-      main: '#ffb800',
+      main: '#d946ef',
     },
     info: {
-      main: '#00f5ff',
+      main: '#a78bfa',
     },
   },
   typography: {
@@ -79,15 +79,15 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          background: 'linear-gradient(135deg, rgba(20, 10, 40, 0.9) 0%, rgba(30, 15, 50, 0.8) 100%)',
           backdropFilter: 'blur(24px)',
-          border: '1px solid rgba(0, 245, 255, 0.15)',
-          boxShadow: '0 8px 32px 0 rgba(0, 245, 255, 0.1)',
+          border: '1px solid rgba(167, 139, 250, 0.15)',
+          boxShadow: '0 8px 32px 0 rgba(167, 139, 250, 0.1)',
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           '&:hover': {
             transform: 'translateY(-6px)',
-            boxShadow: '0 16px 48px 0 rgba(0, 245, 255, 0.25)',
-            border: '1px solid rgba(0, 245, 255, 0.4)',
+            boxShadow: '0 16px 48px 0 rgba(167, 139, 250, 0.25)',
+            border: '1px solid rgba(167, 139, 250, 0.4)',
           },
         },
       },
@@ -95,9 +95,9 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          background: 'rgba(15, 23, 42, 0.8)',
+          background: 'rgba(20, 10, 40, 0.8)',
           backdropFilter: 'blur(24px)',
-          border: '1px solid rgba(0, 245, 255, 0.12)',
+          border: '1px solid rgba(167, 139, 250, 0.12)',
         },
       },
     },
@@ -111,25 +111,25 @@ const theme = createTheme({
           boxShadow: 'none',
           textTransform: 'none',
           '&:hover': {
-            boxShadow: '0 8px 24px rgba(0, 245, 255, 0.5)',
+            boxShadow: '0 8px 24px rgba(167, 139, 250, 0.5)',
             transform: 'translateY(-2px)',
           },
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         },
         contained: {
-          background: 'linear-gradient(135deg, #00f5ff 0%, #00c2cc 100%)',
+          background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
           '&:hover': {
-            background: 'linear-gradient(135deg, #5dfdff 0%, #00f5ff 100%)',
+            background: 'linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%)',
           },
         },
         outlined: {
-          borderColor: 'rgba(0, 245, 255, 0.5)',
-          color: '#00f5ff',
+          borderColor: 'rgba(167, 139, 250, 0.5)',
+          color: '#a78bfa',
           borderWidth: '2px',
           '&:hover': {
-            borderColor: '#00f5ff',
+            borderColor: '#a78bfa',
             borderWidth: '2px',
-            background: 'rgba(0, 245, 255, 0.1)',
+            background: 'rgba(167, 139, 250, 0.1)',
           },
         },
       },
@@ -137,9 +137,9 @@ const theme = createTheme({
     MuiChip: {
       styleOverrides: {
         root: {
-          background: 'rgba(0, 245, 255, 0.12)',
-          border: '1px solid rgba(0, 245, 255, 0.4)',
-          color: '#00f5ff',
+          background: 'rgba(167, 139, 250, 0.12)',
+          border: '1px solid rgba(167, 139, 250, 0.4)',
+          color: '#a78bfa',
           fontWeight: 600,
           fontSize: '0.875rem',
         },
@@ -152,14 +152,14 @@ const theme = createTheme({
             background: 'rgba(255, 255, 255, 0.03)',
             borderRadius: '12px',
             '& fieldset': {
-              borderColor: 'rgba(0, 245, 255, 0.2)',
+              borderColor: 'rgba(167, 139, 250, 0.2)',
               borderWidth: '2px',
             },
             '&:hover fieldset': {
-              borderColor: 'rgba(0, 245, 255, 0.5)',
+              borderColor: 'rgba(167, 139, 250, 0.5)',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#00f5ff',
+              borderColor: '#a78bfa',
               borderWidth: '2px',
             },
           },
@@ -169,11 +169,11 @@ const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: '1px solid rgba(0, 245, 255, 0.08)',
+          borderBottom: '1px solid rgba(167, 139, 250, 0.08)',
         },
         head: {
           fontWeight: 700,
-          background: 'rgba(0, 245, 255, 0.08)',
+          background: 'rgba(167, 139, 250, 0.08)',
           fontSize: '0.875rem',
           textTransform: 'uppercase',
           letterSpacing: '0.05em',

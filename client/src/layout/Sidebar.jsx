@@ -30,7 +30,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
         height: '100%',
         background: 'linear-gradient(180deg, rgba(26, 32, 44, 0.95) 0%, rgba(15, 20, 25, 0.95) 100%)',
         backdropFilter: 'blur(20px)',
-        borderRight: '1px solid rgba(0, 212, 255, 0.1)',
+        borderRight: '1px solid rgba(167, 139, 250, 0.1)',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -55,11 +55,11 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
               width: 48,
               height: 48,
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, #00f5ff 0%, #00c2cc 100%)',
+              background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 8px 24px rgba(0, 245, 255, 0.5)',
+              boxShadow: '0 8px 24px rgba(167, 139, 250, 0.5)',
             }}
           >
             <StorefrontIcon sx={{ fontSize: 28, color: '#fff' }} />
@@ -70,7 +70,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
             variant="h6"
             sx={{
               fontWeight: 800,
-              background: 'linear-gradient(135deg, #00f5ff 0%, #5dfdff 100%)',
+              background: 'linear-gradient(135deg, #a78bfa 0%, #c4b5fd 100%)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -105,12 +105,12 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                 overflow: 'hidden',
                 position: 'relative',
                 background: isActive
-                  ? 'linear-gradient(135deg, rgba(0, 245, 255, 0.15) 0%, rgba(0, 194, 204, 0.15) 100%)'
+                  ? 'linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%)'
                   : 'transparent',
-                border: isActive ? '1px solid rgba(0, 245, 255, 0.4)' : '1px solid transparent',
+                border: isActive ? '1px solid rgba(167, 139, 250, 0.4)' : '1px solid transparent',
                 '&:hover': {
-                  background: 'linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(0, 194, 204, 0.1) 100%)',
-                  border: '1px solid rgba(0, 245, 255, 0.3)',
+                  background: 'linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%)',
+                  border: '1px solid rgba(167, 139, 250, 0.3)',
                   transform: 'translateX(8px)',
                 },
                 transition: 'all 0.3s ease',
@@ -125,7 +125,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                     top: 0,
                     bottom: 0,
                     width: '4px',
-                    background: 'linear-gradient(180deg, #00d4ff 0%, #0080ff 100%)',
+                    background: 'linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%)',
                     borderRadius: '0 4px 4px 0',
                   }}
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -133,7 +133,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
               )}
               <ListItemIcon
                 sx={{
-                  color: isActive ? '#00f5ff' : 'rgba(255, 255, 255, 0.6)',
+                  color: isActive ? '#a78bfa' : 'rgba(255, 255, 255, 0.6)',
                   minWidth: 40,
                   transition: 'all 0.3s ease',
                 }}
@@ -144,7 +144,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
                 primary={item.text}
                 primaryTypographyProps={{
                   fontWeight: isActive ? 700 : 500,
-                  color: isActive ? '#00f5ff' : 'rgba(255, 255, 255, 0.8)',
+                  color: isActive ? '#a78bfa' : 'rgba(255, 255, 255, 0.8)',
                 }}
               />
             </MotionListItem>

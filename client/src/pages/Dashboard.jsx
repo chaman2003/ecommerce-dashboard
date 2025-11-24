@@ -170,7 +170,7 @@ const Dashboard = () => {
       >
         <CircularProgress
           sx={{
-            color: '#00d4ff',
+            color: '#a78bfa',
           }}
           size={60}
         />
@@ -253,7 +253,7 @@ const Dashboard = () => {
             zIndex: 5,
             backgroundColor: 'rgba(255,255,255,0.05)',
             '& .MuiLinearProgress-bar': {
-              background: 'linear-gradient(90deg, #00d4ff, #6c63ff)',
+              background: 'linear-gradient(90deg, #a78bfa, #7c3aed)',
             },
           }}
         />
@@ -268,7 +268,7 @@ const Dashboard = () => {
           sx={{
             mb: 1,
             fontWeight: 700,
-            background: 'linear-gradient(135deg, #ffffff 0%, #00d4ff 100%)',
+            background: 'linear-gradient(135deg, #ffffff 0%, #a78bfa 100%)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -298,7 +298,7 @@ const Dashboard = () => {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-            <FilterListIcon sx={{ color: '#00d4ff' }} />
+            <FilterListIcon sx={{ color: '#a78bfa' }} />
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
               Interactive Filters
             </Typography>
@@ -307,10 +307,10 @@ const Dashboard = () => {
               onClick={resetFilters}
               sx={{ 
                 ml: 'auto',
-                background: 'rgba(0, 212, 255, 0.1)',
-                border: '1px solid rgba(0, 212, 255, 0.3)',
+                background: 'rgba(167, 139, 250, 0.1)',
+                border: '1px solid rgba(167, 139, 250, 0.3)',
                 '&:hover': {
-                  background: 'rgba(0, 212, 255, 0.2)',
+                  background: 'rgba(167, 139, 250, 0.2)',
                 }
               }}
             />
@@ -378,10 +378,10 @@ const Dashboard = () => {
                   step={null}
                   marks={ratingMarks}
                   sx={{
-                    color: '#00d4ff',
+                    color: '#a78bfa',
                     '& .MuiSlider-thumb': {
                       '&:hover, &.Mui-focusVisible': {
-                        boxShadow: '0 0 0 8px rgba(0, 212, 255, 0.16)',
+                        boxShadow: '0 0 0 8px rgba(167, 139, 250, 0.16)',
                       },
                     },
                   }}
@@ -395,28 +395,28 @@ const Dashboard = () => {
               <Chip 
                 label={`Brand: ${selectedBrand}`} 
                 onDelete={() => setSelectedBrand('All')}
-                sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
+                sx={{ background: 'rgba(167, 139, 250, 0.1)' }}
               />
             )}
             {selectedOrigin !== 'All' && (
               <Chip 
                 label={`Origin: ${selectedOrigin}`} 
                 onDelete={() => setSelectedOrigin('All')}
-                sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
+                sx={{ background: 'rgba(167, 139, 250, 0.1)' }}
               />
             )}
             {selectedCategory !== 'All' && (
               <Chip 
                 label={`Category: ${selectedCategory}`} 
                 onDelete={() => setSelectedCategory('All')}
-                sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
+                sx={{ background: 'rgba(167, 139, 250, 0.1)' }}
               />
             )}
             {minRating > 0 && (
               <Chip 
                 label={`Min Rating: ${minRating.toFixed(1)}`} 
                 onDelete={() => setMinRating(0)}
-                sx={{ background: 'rgba(0, 212, 255, 0.1)' }}
+                sx={{ background: 'rgba(167, 139, 250, 0.1)' }}
               />
             )}
           </Box>
@@ -431,7 +431,7 @@ const Dashboard = () => {
             value={analytics.totalProducts}
             icon={<InventoryIcon sx={{ fontSize: 32 }} />}
             subtitle={filtersApplied ? 'Matching current filters' : 'Entire catalog'}
-            color="#00d4ff"
+            color="#a78bfa"
             delay={0}
           />
         </Grid>
@@ -552,8 +552,8 @@ const Dashboard = () => {
             border: '1px solid rgba(255, 255, 255, 0.1)',
             borderRadius: '20px',
             '&:hover': {
-              boxShadow: '0 12px 48px 0 rgba(0, 212, 255, 0.2)',
-              border: '1px solid rgba(0, 212, 255, 0.3)',
+            boxShadow: '0 12px 48px 0 rgba(167, 139, 250, 0.2)',
+            border: '1px solid rgba(167, 139, 250, 0.3)',
             },
             transition: 'all 0.3s ease',
           }}
@@ -602,7 +602,7 @@ const Dashboard = () => {
                       transition={{ delay: index * 0.05 }}
                       sx={{
                         '&:hover': {
-                          background: 'rgba(0, 212, 255, 0.05)',
+                          background: 'rgba(167, 139, 250, 0.05)',
                         },
                       }}
                     >

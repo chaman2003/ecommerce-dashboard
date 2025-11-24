@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Box } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { motion } from 'framer-motion';
 
-const colors = ['#00d4ff', '#6c63ff', '#ffaa00', '#00ff88', '#f472b6', '#a78bfa', '#34d399', '#f97316'];
+const colors = ['#a78bfa', '#7c3aed', '#ffaa00', '#00ff88', '#f472b6', '#ec4899', '#34d399', '#f97316'];
 
 const AnimatedBarChart = ({
   data = [],
@@ -21,10 +21,10 @@ const AnimatedBarChart = ({
           sx={{
             background: 'rgba(26, 32, 44, 0.95)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(0, 212, 255, 0.3)',
+            border: '1px solid rgba(167, 139, 250, 0.3)',
             borderRadius: '12px',
             p: 2,
-            boxShadow: '0 8px 32px rgba(0, 212, 255, 0.2)',
+            boxShadow: '0 8px 32px rgba(167, 139, 250, 0.2)',
           }}
         >
           <Typography variant="body2" color="text.secondary">
@@ -33,7 +33,7 @@ const AnimatedBarChart = ({
           <Typography
             variant="h6"
             sx={{
-              color: '#00d4ff',
+              color: '#a78bfa',
               fontWeight: 600,
             }}
           >
@@ -69,8 +69,8 @@ const AnimatedBarChart = ({
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: '20px',
           '&:hover': {
-            boxShadow: '0 12px 48px 0 rgba(0, 212, 255, 0.2)',
-            border: '1px solid rgba(0, 212, 255, 0.3)',
+            boxShadow: '0 12px 48px 0 rgba(167, 139, 250, 0.2)',
+            border: '1px solid rgba(167, 139, 250, 0.3)',
           },
           transition: 'all 0.3s ease',
         }}
@@ -107,7 +107,7 @@ const AnimatedBarChart = ({
                   style={{ fontSize: '12px' }}
                 />
                 <YAxis stroke="rgba(255, 255, 255, 0.5)" style={{ fontSize: '12px' }} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(0, 212, 255, 0.1)' }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(167, 139, 250, 0.1)' }} />
                 <Bar
                   dataKey={dataKey}
                   radius={[8, 8, 0, 0]}

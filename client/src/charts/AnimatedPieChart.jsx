@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 
-const COLORS = ['#00d4ff', '#6c63ff', '#ffaa00', '#00ff88', '#f472b6', '#a78bfa', '#34d399', '#f97316'];
+const COLORS = ['#a78bfa', '#7c3aed', '#ffaa00', '#00ff88', '#f472b6', '#ec4899', '#34d399', '#f97316'];
 
 const AnimatedPieChart = ({
   data = [],
@@ -21,7 +21,7 @@ const AnimatedPieChart = ({
           sx={{
             background: 'rgba(26, 32, 44, 0.95)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(0, 212, 255, 0.3)',
+            border: '1px solid rgba(167, 139, 250, 0.3)',
             borderRadius: '12px',
             p: 2,
           }}
@@ -29,7 +29,7 @@ const AnimatedPieChart = ({
           <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
             {payload[0].name}
           </Typography>
-          <Typography variant="body2" sx={{ color: '#00d4ff' }}>
+          <Typography variant="body2" sx={{ color: '#a78bfa' }}>
             {payload[0].value} items ({((payload[0].value / data.reduce((sum, item) => sum + item[dataKey], 0)) * 100).toFixed(1)}%)
           </Typography>
         </Box>
@@ -100,8 +100,8 @@ const AnimatedPieChart = ({
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: '20px',
           '&:hover': {
-            boxShadow: '0 12px 48px 0 rgba(0, 212, 255, 0.2)',
-            border: '1px solid rgba(0, 212, 255, 0.3)',
+            boxShadow: '0 12px 48px 0 rgba(167, 139, 250, 0.2)',
+            border: '1px solid rgba(167, 139, 250, 0.3)',
           },
           transition: 'all 0.3s ease',
         }}

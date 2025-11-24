@@ -17,7 +17,7 @@ const Navbar = ({ handleDrawerToggle }) => {
         background: 'rgba(26, 32, 44, 0.8)',
         backdropFilter: 'blur(20px)',
         boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-        borderBottom: '1px solid rgba(0, 212, 255, 0.1)',
+        borderBottom: '1px solid rgba(167, 139, 250, 0.1)',
       }}
     >
       <Toolbar>
@@ -29,7 +29,7 @@ const Navbar = ({ handleDrawerToggle }) => {
             mr: 2,
             display: { md: 'none' },
             '&:hover': {
-              background: 'rgba(0, 212, 255, 0.1)',
+              background: 'rgba(167, 139, 250, 0.1)',
             },
           }}
         >
@@ -67,10 +67,10 @@ const Navbar = ({ handleDrawerToggle }) => {
             <IconButton
               color="inherit"
               sx={{
-                background: 'rgba(0, 212, 255, 0.1)',
-                border: '1px solid rgba(0, 212, 255, 0.2)',
+                background: 'rgba(167, 139, 250, 0.1)',
+                border: '1px solid rgba(167, 139, 250, 0.2)',
                 '&:hover': {
-                  background: 'rgba(0, 212, 255, 0.2)',
+                  background: 'rgba(167, 139, 250, 0.2)',
                 },
               }}
             >
@@ -82,10 +82,10 @@ const Navbar = ({ handleDrawerToggle }) => {
             <IconButton
               color="inherit"
               sx={{
-                background: 'rgba(0, 212, 255, 0.1)',
-                border: '1px solid rgba(0, 212, 255, 0.2)',
+                background: 'rgba(167, 139, 250, 0.1)',
+                border: '1px solid rgba(167, 139, 250, 0.2)',
                 '&:hover': {
-                  background: 'rgba(0, 212, 255, 0.2)',
+                  background: 'rgba(167, 139, 250, 0.2)',
                 },
               }}
             >
@@ -100,10 +100,10 @@ const Navbar = ({ handleDrawerToggle }) => {
               sx={{
                 width: 40,
                 height: 40,
-                background: 'linear-gradient(135deg, #00d4ff 0%, #0080ff 100%)',
-                border: '2px solid rgba(0, 212, 255, 0.3)',
+                background: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)',
+                border: '2px solid rgba(167, 139, 250, 0.3)',
                 cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(0, 212, 255, 0.3)',
+                boxShadow: '0 4px 12px rgba(167, 139, 250, 0.3)',
               }}
             >
               U

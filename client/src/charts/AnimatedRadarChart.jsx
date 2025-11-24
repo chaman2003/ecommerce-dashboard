@@ -19,7 +19,7 @@ const AnimatedRadarChart = ({
           sx={{
             background: 'rgba(26, 32, 44, 0.95)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(0, 212, 255, 0.3)',
+            border: '1px solid rgba(167, 139, 250, 0.3)',
             borderRadius: '12px',
             p: 2,
           }}
@@ -27,7 +27,7 @@ const AnimatedRadarChart = ({
           <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
             {payload[0].payload[nameKey]}
           </Typography>
-          <Typography variant="body2" sx={{ color: '#00d4ff' }}>
+          <Typography variant="body2" sx={{ color: '#a78bfa' }}>
             {payload[0].value} items
           </Typography>
         </Box>
@@ -71,7 +71,7 @@ const AnimatedRadarChart = ({
                 width: 10,
                 height: 10,
                 borderRadius: '50%',
-                background: '#00d4ff',
+                background: '#a78bfa',
               }}
             />
             <Typography variant="caption" color="text.secondary">
@@ -116,8 +116,8 @@ const AnimatedRadarChart = ({
           border: '1px solid rgba(255, 255, 255, 0.1)',
           borderRadius: '20px',
           '&:hover': {
-            boxShadow: '0 12px 48px 0 rgba(0, 212, 255, 0.2)',
-            border: '1px solid rgba(0, 212, 255, 0.3)',
+            boxShadow: '0 12px 48px 0 rgba(167, 139, 250, 0.2)',
+            border: '1px solid rgba(167, 139, 250, 0.3)',
           },
           transition: 'all 0.3s ease',
         }}
@@ -151,8 +151,8 @@ const AnimatedRadarChart = ({
                 <Radar
                   name="Products"
                   dataKey={dataKey}
-                  stroke="#00d4ff"
-                  fill="#00d4ff"
+                  stroke="#a78bfa"
+                  fill="#a78bfa"
                   fillOpacity={0.5}
                   strokeWidth={2}
                   animationDuration={1000}
